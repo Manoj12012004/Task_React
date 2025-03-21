@@ -1,70 +1,142 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# **Kanban Board Setup Documentation**
 
-## Available Scripts
+### **Setup**
 
-In the project directory, you can run:
+This section guides you through installing and running the Kanban board application on your local machine.
 
-### `npm start`
+#### **Prerequisites**
+- **Node.js**: Version 14.0.0 or higher ([Download](https://nodejs.org/))
+- **npm**: Version 6.0.0 or higher (comes with Node.js) or **yarn** (optional)
+- A modern web browser (Chrome, Firefox, Edge, etc.)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### **Installation Steps**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **Clone the Repository**
+   - Open a terminal or command prompt
+   - Run the following command, replacing `<your-repository-url>` with your actual repository URL:
+     ```bash
+     git clone <your-repository-url>
+     cd kanban-board
+     ```
 
-### `npm test`
+2. **Install Dependencies**
+   - Ensure you're in the project directory (`kanban-board`)
+   - Install required packages:
+     ```bash
+     npm install
+     ```
+     This installs:
+     - React and React DOM
+     - Redux Toolkit and React-Redux
+     - @dnd-kit/core and @dnd-kit/sortable
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. **Verify Project Structure**
+   - Confirm the following files exist in `src/`:
+     ```
+     src/
+     ├── components/
+     │   ├── Dashboard.jsx
+     │   ├── form.jsx
+     │   ├── kanbancol.jsx
+     │   ├── search.jsx
+     │   └── task.jsx
+     ├── redux/
+     │   ├── store.js
+     │   └── taskSlice.js
+     ├── styles.css
+     └── index.js
+     ```
 
-### `npm run build`
+4. **Configure Entry Point**
+   - Ensure `src/App.js` includes the Redux Provider:
+     ```javascript
+     import {React} from 'react';
+    import {HTML5Backend} from 'react-dnd-html5-backend';
+    import {DndProvider} from 'react-dnd';
+    import Dashboard from './components/dash';
+    import { Provider } from 'react-redux';
+    import { store } from './components/store';
+    import './App.css';
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    const App=()=>{
+    return(
+    <Provider store={store}>
+        <DndProvider backend={HTML5Backend}>
+        <Dashboard />
+        </DndProvider>
+        </Provider>
+    );
+    }
+    export default App;
+     ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+5. **Run the Application**
+   - Start the development server:
+     ```bash
+     npm start
+     ```
+   - The app should automatically open in your default browser at `http://localhost:3000`. If it doesn't, manually navigate to this URL.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### **Troubleshooting Setup**
+- **Command `npm start` fails**: Ensure `react-scripts` is in `package.json` dependencies. Run `npm install react-scripts` if missing.
+- **Port Conflict**: If port 3000 is in use, you'll be prompted to use another port (e.g., 3001).
+- **Dependencies Fail**: Delete `node_modules/` and `package-lock.json`, then rerun `npm install`.
 
-### `npm run eject`
+### **Usage**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This section explains how to interact with the Kanban board application once it's running.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### **Accessing the Application**
+- Open your browser at `http://localhost:3000`
+- You’ll see four columns: "To Do", "In Progress", "Peer Review", and "Done"
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### **Adding a New Task**
+1. Click the "Add Task" button (typically at the bottom-right)
+2. A modal form appears:
+   - **Title**: Enter a brief task name (required)
+   - **Description**: Add task details (required)
+3. Click "Add Task" to save
+   - The new task appears in the "To Do" column
+4. Click "Cancel" to close without saving
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### **Moving Tasks**
+- **Between Columns**:
+  1. Click and hold a task card
+  2. Drag it to another column
+  3. Release to drop it in the new column
+  - The task’s status updates automatically
+- **Within a Column**:
+  1. Drag a task up or down within its current column
+  2. Drop it in the desired position
+  - Tasks reorder within the same column
 
-## Learn More
+#### **Searching Tasks**
+1. Locate the search bar at the top of the dashboard
+2. Type a keyword or phrase
+   - Tasks filter in real-time based on title (case-insensitive)
+3. Clear the search input to show all tasks
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### **Visual Feedback**
+- During drag: Tasks show a slight movement animation
+- Empty columns display "No tasks in this column"
+- Form appears centered on screen when adding tasks
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### **Example Workflow**
+1. Add a task: "Implement Login" with description "Create login page UI"
+2. Drag it from "To Do" to "In Progress" when you start working
+3. Move to "Peer Review" when ready for review
+4. Finally, drag to "Done" when complete
+5. Search "Login" to filter tasks
 
-### Code Splitting
+#### **Notes**
+- Tasks are stored in memory via Redux; refreshing the page clears all tasks
+- No persistence to a database (yet!)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### **Troubleshooting Usage**
+- **Task Not Moving**: Ensure you’re dragging over a valid column; check console for errors
+- **Search Not Working**: Verify text input updates the search state
+- **Form Issues**: Ensure all fields are filled before submitting
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
